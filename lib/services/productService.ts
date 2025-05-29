@@ -76,10 +76,10 @@ export const getProductById = async (id: string): Promise<Product | null> => {
     return {
       id: productSnapshot.id,
       nom: data.nom || "",
-      categorie: data.categorie || "",
+      categorie: data.categories || "",
       marque: data.marque || "",
       prix: avgPrice,
-      created_at: data.created_at?.toDate() || new Date(),
+      created_at: data.cree_le?.toDate() || new Date(),
       produits: data.produits || {}
     };
   } catch (error) {
@@ -97,7 +97,7 @@ export const getProductCategories = async (): Promise<{ name: string; value: num
     
     productsSnapshot.docs.forEach(doc => {
       const data = doc.data();
-      const category = data.categorie || "Uncategorized";
+      const category = data.categories || "Non catégorisé";
       categories[category] = (categories[category] || 0) + 1;
     });
     
@@ -145,7 +145,7 @@ export const getStoresWithProducts = async (): Promise<string[]> => {
 export const getProductsByCategory = async (category: string): Promise<Product[]> => {
   try {
     const productsCol = collection(db, "InfoProduit");
-    const productsQuery = query(productsCol, where("categorie", "==", category));
+    const productsQuery = query(productsCol, where("categories", "==", category));
     const productsSnapshot = await getDocs(productsQuery);
     
     return productsSnapshot.docs.map(doc => {

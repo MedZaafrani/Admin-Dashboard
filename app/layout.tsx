@@ -8,7 +8,7 @@ import Script from "next/script";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Smart Dashboard Admin Dashboard",
+  title: "Dashboard Admin Dashboard",
   description: "Admin Dashboard for Smart DashboardSystem",
 };
 

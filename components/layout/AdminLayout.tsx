@@ -65,14 +65,14 @@ export default function AdminLayout({
   }, []);
 
   const navItems = [
-    { href: "/dashboard", icon: <Home size={18} />, label: "Dashboard" },
-    { href: "/users", icon: <Users size={18} />, label: "Users" },
-    { href: "/products", icon: <ShoppingBag size={18} />, label: "Products" },
-    { href: "/stores", icon: <Store size={18} />, label: "Stores" },
+    { href: "/dashboard", icon: <Home size={18} />, label: "Tableau de bord" },
+    { href: "/users", icon: <Users size={18} />, label: "Utilisateurs" },
+    { href: "/products", icon: <ShoppingBag size={18} />, label: "Produits" },
+    { href: "/stores", icon: <Store size={18} />, label: "Magasins" },
     {
       href: "/reclamations",
       icon: <MessageSquare size={18} />,
-      label: "Reclamations",
+      label: "Réclamations",
     },
   ];
 
@@ -113,7 +113,7 @@ export default function AdminLayout({
       <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0">
         <div className="flex flex-col flex-grow border-r border-border bg-card pt-5 overflow-y-auto">
           <div className="flex items-center justify-center h-16">
-            <h1 className="text-xl font-bold">Smart Dashboard Admin</h1>
+            <h1 className="text-xl font-bold">Dashboard Admin</h1>
           </div>
           <Separator className="my-4" />
           <nav className="flex-1 px-4 pb-4 space-y-2">
@@ -151,7 +151,7 @@ export default function AdminLayout({
           <div className="fixed inset-y-0 left-0 max-w-xs w-full bg-card">
             <div className="flex flex-col h-full pt-5">
               <div className="flex items-center justify-between px-4 h-16">
-                <h1 className="text-xl font-bold">Smart Dashboard Admin</h1>
+                <h1 className="text-xl font-bold">Dashboard Admin</h1>
                 <Button
                   variant="ghost"
                   size="icon"

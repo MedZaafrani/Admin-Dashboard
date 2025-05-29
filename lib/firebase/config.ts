@@ -22,5 +22,14 @@ if (typeof window !== "undefined") {
   db = getFirestore(app);
   auth = getAuth(app);
 }
+// — secondary “admin” app/auth for user-creation only —
+let adminApp;
+let adminAuth;
 
-export { app, db, auth };
+if (typeof window !== "undefined") {
+  // if you haven’t yet initialized an app named "admin", do so:
+  adminApp  = getApps().find(a => a.name === "admin")
+            || initializeApp(firebaseConfig, "admin");
+  adminAuth = getAuth(adminApp);
+}
+export { app, db, auth, adminAuth  };

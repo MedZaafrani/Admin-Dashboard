@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/hooks/useAuth";
-import { getUsers, updateUser, deleteUser, toggleUserBlock } from "@/lib/services/userService";
+import { getUsers, updateUser, deleteUser} from "@/lib/services/userService";
 import { User } from "@/lib/types";
 import { formatDate } from "@/lib/utils/date";
 import { useForm } from "react-hook-form";
@@ -194,29 +194,29 @@ export default function UsersPage() {
     }
   };
   
-  const handleToggleBlock = async (userId: string, currentStatus: boolean) => {
-    try {
-      await toggleUserBlock(userId, !currentStatus);
+  // const handleToggleBlock = async (userId: string, currentStatus: boolean) => {
+  //   try {
+  //     await toggleUserBlock(userId, !currentStatus);
       
-      // Update local state
-      const updatedUsers = users.map((u) =>
-        u.id === userId ? { ...u, isBlocked: !currentStatus } : u
-      );
-      setUsers(updatedUsers);
+  //     // Update local state
+  //     const updatedUsers = users.map((u) =>
+  //       u.id === userId ? { ...u, isBlocked: !currentStatus } : u
+  //     );
+  //     setUsers(updatedUsers);
       
-      toast({
-        title: "Success",
-        description: `User ${!currentStatus ? "blocked" : "unblocked"} successfully`,
-      });
-    } catch (error) {
-      console.error("Error toggling user block status:", error);
-      toast({
-        title: "Error",
-        description: "Failed to update user status",
-        variant: "destructive",
-      });
-    }
-  };
+  //     toast({
+  //       title: "Success",
+  //       description: `User ${!currentStatus ? "blocked" : "unblocked"} successfully`,
+  //     });
+  //   } catch (error) {
+  //     console.error("Error toggling user block status:", error);
+  //     toast({
+  //       title: "Error",
+  //       description: "Failed to update user status",
+  //       variant: "destructive",
+  //     });
+  //   }
+  // };
   
   if (loading) {
     return (
@@ -234,14 +234,14 @@ export default function UsersPage() {
     <AdminLayout>
       <div className="flex flex-col gap-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <h1 className="text-3xl font-bold">Users Management</h1>
+          <h1 className="text-3xl font-bold">Gestion des utilisateurs</h1>
           
           <div className="flex items-center gap-2">
             <div className="relative">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 type="search"
-                placeholder="Search users..."
+                placeholder="Rechercher un utilisateur..."
                 className="pl-8 w-full sm:w-64"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -249,14 +249,14 @@ export default function UsersPage() {
             </div>
             <Button onClick={() => setCreateModalOpen(true)}>
               <Plus className="h-4 w-4 mr-2" />
-              Add User
+              Ajouter un utilisateur
             </Button>
           </div>
         </div>
         
         <Card>
           <CardHeader>
-            <CardTitle>Users</CardTitle>
+            <CardTitle>Les utilisateurs</CardTitle>
           </CardHeader>
           <CardContent>
             {dataLoading ? (
@@ -269,15 +269,15 @@ export default function UsersPage() {
             ) : (
               <div className="rounded-md border">
                 <Table>
-                  <TableCaption>All registered users in the system</TableCaption>
+                  <TableCaption>Tous les utilisateurs enregistrés dans le système</TableCaption>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Phone</TableHead>
-                      <TableHead>Location</TableHead>
-                      <TableHead>Joined</TableHead>
-                      <TableHead>Status</TableHead>
+                      <TableHead>Nom</TableHead>
+                      <TableHead>E-mail</TableHead>
+                      <TableHead>Telephone</TableHead>
+                      <TableHead>Localisation</TableHead>
+                      <TableHead>Rejoint</TableHead>
+                      <TableHead>Statut</TableHead>
                       <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -317,7 +317,7 @@ export default function UsersPage() {
                               <span className="sr-only">Edit user</span>
                             </Button>
                             
-                            <Button
+                            {/* <Button
                               variant="ghost"
                               size="icon"
                               onClick={() => handleToggleBlock(user.id, user.isBlocked || false)}
@@ -330,7 +330,7 @@ export default function UsersPage() {
                               <span className="sr-only">
                                 {user.isBlocked ? "Unblock user" : "Block user"}
                               </span>
-                            </Button>
+                            </Button> */}
                             
                             <Button
                               variant="ghost"

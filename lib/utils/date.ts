@@ -1,36 +1,54 @@
-import { format, parseISO } from "date-fns";
+// lib/utils/date.ts
+import { format, parseISO, isValid, parse } from "date-fns";
 
-export const formatDate = (date: Date | string): string => {
-  const dateObj = typeof date === "string" ? new Date(date) : date;
-  return format(dateObj, "MMM dd, yyyy");
+// Helper: turn a Date|string into a valid Date, or return null
+const toDate = (d: Date | string | null | undefined): Date | null => {
+  if (!d) return null;
+  let dt: Date;
+  if (typeof d === "string") {
+    // Try ISO first
+    dt = parseISO(d);
+    if (!isValid(dt)) {
+      // If that fails, try parsing a "MMM yyyy" format
+      dt = parse(d, "MMM yyyy", new Date());
+    }
+  } else {
+    dt = d;
+  }
+  return isValid(dt) ? dt : null;
 };
 
-export const formatDateTime = (date: Date | string): string => {
-  const dateObj = typeof date === "string" ? new Date(date) : date;
-  return format(dateObj, "MMM dd, yyyy HH:mm");
+export const formatDate = (date: Date | string | null | undefined): string => {
+  const dt = toDate(date);
+  return dt ? format(dt, "MMM dd, yyyy") : "";
 };
 
-export const formatDateForInput = (date: Date | string): string => {
-  const dateObj = typeof date === "string" ? new Date(date) : date;
-  return format(dateObj, "yyyy-MM-dd");
+export const formatDateTime = (date: Date | string | null | undefined): string => {
+  const dt = toDate(date);
+  return dt ? format(dt, "MMM dd, yyyy HH:mm") : "";
 };
 
-export const getMonthsArray = (): string[] => {
-  return [
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun", 
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-  ];
+export const formatDateForInput = (date: Date | string | null | undefined): string => {
+  const dt = toDate(date);
+  return dt ? format(dt, "yyyy-MM-dd") : "";
 };
 
-export const groupDataByMonth = (data: { date: string; value: number }[]): { date: string; value: number }[] => {
-  const monthlyData: { [key: string]: number } = {};
-  
+export const getMonthsArray = (): string[] => [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+];
+
+export const groupDataByMonth = (
+  data: { date: string; value: number }[]
+): { date: string; value: number }[] => {
+  const monthlyData: Record<string, number> = {};
+
   data.forEach(item => {
-    const date = parseISO(item.date);
-    const monthYear = format(date, "MMM yyyy");
-    
+    const dt = toDate(item.date);
+    if (!dt) return;
+    const monthYear = format(dt, "MMM yyyy");   // e.g. "May 2025"
     monthlyData[monthYear] = (monthlyData[monthYear] || 0) + item.value;
   });
-  
+
   return Object.entries(monthlyData).map(([date, value]) => ({ date, value }));
 };

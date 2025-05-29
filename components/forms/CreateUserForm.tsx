@@ -17,6 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
+import { FirebaseError } from "firebase/app";
 
 const userSchema = z.object({
   nom: z.string().min(2, "Name must be at least 2 characters"),
@@ -54,17 +55,31 @@ export default function CreateUserForm({ onSuccess, onCancel }: CreateUserFormPr
       const { password, ...userData } = data;
       await createUser(userData, password);
       toast({
-        title: "Success",
-        description: "User created successfully",
+        title: "succès",
+        description: "Utilisateur créé avec succès",
       });
       onSuccess?.();
     } catch (error) {
       console.error("Error creating user:", error);
       toast({
         title: "Error",
-        description: "Failed to create user",
+        description: "Erreur lors de la création de l'utilisateur",
         variant: "destructive",
       });
+      let description = "Erreur lors de la création de l'utilisateur";
+      if (error instanceof FirebaseError) {
+      if (error.code === "auth/email-already-in-use") {
+        description = "Cette adresse email est déjà utilisée.";
+      } else if (error.code === "auth/invalid-email") {
+        description = "Format d'email invalide.";
+      } // add more codes if you like
+    }
+
+    toast({
+      title: "Échec",
+      description,
+      variant: "destructive",
+    });
     } finally {
       setIsSubmitting(false);
     }
@@ -78,9 +93,9 @@ export default function CreateUserForm({ onSuccess, onCancel }: CreateUserFormPr
           name="nom"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>Nom</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="Enter name" />
+                <Input {...field} placeholder="Entrez le nom" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -94,7 +109,7 @@ export default function CreateUserForm({ onSuccess, onCancel }: CreateUserFormPr
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input {...field} type="email" placeholder="Enter email" />
+                <Input {...field} type="email" placeholder="Entrez l'email" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -106,9 +121,9 @@ export default function CreateUserForm({ onSuccess, onCancel }: CreateUserFormPr
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>Mot de passe</FormLabel>
               <FormControl>
-                <Input {...field} type="password" placeholder="Enter password" />
+                <Input {...field} type="password" placeholder="Entrez le Mot de passe" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -120,9 +135,9 @@ export default function CreateUserForm({ onSuccess, onCancel }: CreateUserFormPr
           name="telephone"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Phone</FormLabel>
+              <FormLabel>telephone</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="Enter phone number" />
+                <Input {...field} placeholder="Entrez le numero de telephone" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -134,9 +149,9 @@ export default function CreateUserForm({ onSuccess, onCancel }: CreateUserFormPr
           name="localisation"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Location</FormLabel>
+              <FormLabel>localisation</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="Enter location" />
+                <Input {...field} placeholder="Entrez la localisation" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -146,11 +161,11 @@ export default function CreateUserForm({ onSuccess, onCancel }: CreateUserFormPr
         <div className="flex justify-end space-x-2">
           {onCancel && (
             <Button type="button" variant="outline" onClick={onCancel}>
-              Cancel
+              Annuler
             </Button>
           )}
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Creating..." : "Create User"}
+            {isSubmitting ? "en cours..." : "Créer un utilisateur"}
           </Button>
         </div>
       </form>

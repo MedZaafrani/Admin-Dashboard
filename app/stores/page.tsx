@@ -124,7 +124,7 @@ export default function StoresPage() {
     <AdminLayout>
       <div className="flex flex-col gap-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <h1 className="text-3xl font-bold">Stores Management</h1>
+          <h1 className="text-3xl font-bold">Gestion des magasins</h1>
           
           <div className="flex items-center gap-2">
             <div className="relative">
@@ -139,7 +139,7 @@ export default function StoresPage() {
             </div>
             <Button onClick={() => setCreateModalOpen(true)}>
               <Plus className="h-4 w-4 mr-2" />
-              Add Store
+              Ajouter un magasin
             </Button>
           </div>
         </div>
@@ -154,8 +154,8 @@ export default function StoresPage() {
           <TabsContent value="map">
             <Card>
               <CardHeader>
-                <CardTitle>Store Locations</CardTitle>
-                <CardDescription>View all store locations on the map</CardDescription>
+                <CardTitle>Emplacement des magasins</CardTitle>
+                <CardDescription>Voir tous les emplacements des magasins sur la carte</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="h-[500px] w-full">
@@ -173,7 +173,7 @@ export default function StoresPage() {
           <TabsContent value="table">
             <Card>
               <CardHeader>
-                <CardTitle>All Stores</CardTitle>
+                <CardTitle>Tous les magasins</CardTitle>
               </CardHeader>
               <CardContent>
                 {dataLoading ? (

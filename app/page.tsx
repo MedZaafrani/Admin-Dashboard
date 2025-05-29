@@ -23,7 +23,7 @@ export default function Home() {
     <div className="h-screen flex flex-col items-center justify-center bg-background">
       <div className="flex flex-col items-center text-center max-w-md p-8">
         <h1 className="text-4xl font-bold text-primary mb-6">
-          Smart Dashboard Admin
+          Panneau d&apos;administration
         </h1>
         <p className="text-muted-foreground mb-8">
           Comprehensive management system for the Smart Dashboardplatform.

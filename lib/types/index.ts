@@ -4,9 +4,9 @@ export interface User {
   email: string;
   telephone: string;
   localisation: string;
-  dateJoined: Date | string;
-  isBlocked?: boolean;
-  reclamations?: Reclamation[];
+  date_inscription: Date;
+  derniere_modification: Date;
+  isBlocked: boolean;
 }
 
 export interface Reclamation {

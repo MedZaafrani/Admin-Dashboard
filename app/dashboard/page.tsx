@@ -41,11 +41,31 @@ import {
   Treemap,
   ScatterChart
 } from "recharts";
+import { Console } from "console";
+
+///--------------------------sample data for showing graphics-----------------------------
+// const demoCombinedData = [
+//   { date: '2025-01-01', users:  5, reclamations: 1 },
+//   { date: '2025-02-01', users: 10, reclamations: 2 },
+//   { date: '2025-03-01', users: 15, reclamations: 3 },
+//   { date: '2025-04-01', users: 20, reclamations: 5 },
+//   { date: '2025-05-01', users: 25, reclamations: 4 },
+// ];
+// Sample user-growth data for screenshots
+// const demoUserGrowth = [
+//   { date: '2025-01-01', value:  5 },
+//   { date: '2025-02-01', value: 10 },
+//   { date: '2025-03-01', value: 15 },
+//   { date: '2025-04-01', value: 20 },
+//   { date: '2025-05-01', value: 25 },
+// ];
 
 // Dynamically import AdminLayout with no SSR
 const AdminLayout = dynamic(() => import('@/components/layout/AdminLayout'), { ssr: false });
-
-// Dynamically import MapComponent with no SSR
+const OverviewChart = dynamic(
+  () => import("@/components/OverviewChart"), 
+  { ssr: false }
+);// Dynamically import MapComponent with no SSR
 const MapComponent = dynamic(() => import('@/components/MapComponent'), {
   ssr: false,
   loading: () => <Skeleton className="h-[400px] w-full" />
@@ -179,11 +199,14 @@ export default function DashboardPage() {
   });
   const [usersOverTime, setUsersOverTime] = useState<{ date: string; value: number }[]>([]);
   const [reclamationsOverTime, setReclamationsOverTime] = useState<{ date: string; value: number }[]>([]);
+  
   const [productCategories, setProductCategories] = useState<{ name: string; value: number }[]>([]);
   const [stores, setStores] = useState([]);
   const [selectedStore, setSelectedStore] = useState(null);
   const [dataLoading, setDataLoading] = useState(true);
-  
+  //--------------for demo purposes only---------------- and can swith to real data later
+  // const useDemo = true;
+// const userGrowthData = usersOverTime;
   // Chart colors
   const COLORS = ["hsl(var(--chart-1))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
   
@@ -208,7 +231,9 @@ export default function DashboardPage() {
           getProductCategories(),
           getStores()
         ]);
-        
+        console.log("▶ usersOverTime:", groupDataByMonth(userTimeData));
+console.log("▶ reclamationsOverTime:", groupDataByMonth(reclamationTimeData));
+
         setStats({
           totalUsers: users,
           totalProducts: products,
@@ -216,11 +241,14 @@ export default function DashboardPage() {
         });
         
         // Process time series data
-        setUsersOverTime(groupDataByMonth(userTimeData));
+        setUsersOverTime(userTimeData);
         setReclamationsOverTime(groupDataByMonth(reclamationTimeData));
         setProductCategories(categoryData);
         setStores(storesData);
-        
+        console.log("Stores data:", storesData);
+        console.log("Users over time:", usersOverTime);
+        console.log("Reclamations over time:", reclamationsOverTime);
+        console.log()
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
       } finally {
@@ -234,11 +262,25 @@ export default function DashboardPage() {
   }, [user]);
   
   // Combined data for the overview chart
-  const combinedData = usersOverTime.map((item, index) => ({
-    date: item.date,
-    users: item.value,
-    reclamations: reclamationsOverTime[index]?.value || 0
-  }));
+  // const combinedData = usersOverTime.map((item, index) => ({
+  //   date: item.date,
+  //   users: item.value,
+  //   reclamations: reclamationsOverTime[index]?.value || 0
+  // }));
+  // instead of zipping by index:
+const dataMap: Record<string, { users: number; reclamations: number }> = {};
+
+usersOverTime.forEach(({ date, value }) => {
+  dataMap[date] = { users: value, reclamations: 0 };
+});
+reclamationsOverTime.forEach(({ date, value }) => {
+  dataMap[date] = dataMap[date] 
+    ? { ...dataMap[date], reclamations: value } 
+    : { users: 0, reclamations: value };
+});
+const combinedData = Object.entries(dataMap)
+  .map(([date, { users, reclamations }]) => ({ date, users, reclamations }))
+  .sort((a, b) => a.date.localeCompare(b.date));
 
   // Radar chart data
   const radarData = [
@@ -264,7 +306,7 @@ export default function DashboardPage() {
     <AdminLayout>
       <div className="flex flex-col gap-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-          <h1 className="text-3xl font-bold">Dashboard Overview</h1>
+          <h1 className="text-3xl font-bold">Aperçu du tableau de bord</h1>
           <div className="flex items-center gap-2">
             <BarChart className="h-5 w-5 text-muted-foreground" />
             <span className="text-sm text-muted-foreground">Real-time Analytics</span>
@@ -275,7 +317,7 @@ export default function DashboardPage() {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+              <CardTitle className="text-sm font-medium">Utilisateurs totaux</CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -284,7 +326,7 @@ export default function DashboardPage() {
               ) : (
                 <>
                   <div className="text-2xl font-bold">{stats.totalUsers.toLocaleString()}</div>
-                  <p className="text-xs text-muted-foreground">+20.1% from last month</p>
+                  <p className="text-xs text-muted-foreground">+20,1 % par rapport au mois dernier</p>
                 </>
               )}
             </CardContent>
@@ -292,7 +334,7 @@ export default function DashboardPage() {
           
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Total Products</CardTitle>
+              <CardTitle className="text-sm font-medium">Nombre total de produits</CardTitle>
               <Package className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -301,7 +343,7 @@ export default function DashboardPage() {
               ) : (
                 <>
                   <div className="text-2xl font-bold">{stats.totalProducts.toLocaleString()}</div>
-                  <p className="text-xs text-muted-foreground">+15% from last month</p>
+                  <p className="text-xs text-muted-foreground">+15 % par rapport au mois dernier</p>
                 </>
               )}
             </CardContent>
@@ -309,7 +351,7 @@ export default function DashboardPage() {
           
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Total Reclamations</CardTitle>
+              <CardTitle className="text-sm font-medium">Réclamations totales</CardTitle>
               <Activity className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -318,7 +360,7 @@ export default function DashboardPage() {
               ) : (
                 <>
                   <div className="text-2xl font-bold">{stats.totalReclamations.toLocaleString()}</div>
-                  <p className="text-xs text-muted-foreground">-5% from last month</p>
+                  <p className="text-xs text-muted-foreground">-5 % par rapport au mois dernier</p>
                 </>
               )}
             </CardContent>
@@ -326,7 +368,7 @@ export default function DashboardPage() {
           
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Active Stores</CardTitle>
+              <CardTitle className="text-sm font-medium">Magasins actifs</CardTitle>
               <Store className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -335,7 +377,7 @@ export default function DashboardPage() {
               ) : (
                 <>
                   <div className="text-2xl font-bold">{stores.length}</div>
-                  <p className="text-xs text-muted-foreground">+2 new this month</p>
+                  <p className="text-xs text-muted-foreground">+2 nouveaux ce mois-ci</p>
                 </>
               )}
             </CardContent>
@@ -343,10 +385,10 @@ export default function DashboardPage() {
         </div>
 
         {/* Store Locations Map */}
-        <Card>
+        {/* <Card>
           <CardHeader>
-            <CardTitle>Store Locations</CardTitle>
-            <CardDescription>Geographic distribution of stores</CardDescription>
+            <CardTitle>Emplacements des magasins</CardTitle>
+            <CardDescription>Répartition géographique des magasins</CardDescription>
           </CardHeader>
           <CardContent className="h-[400px]">
             <MapComponent
@@ -356,50 +398,52 @@ export default function DashboardPage() {
               onClosePopup={() => setSelectedStore(null)}
             />
           </CardContent>
-        </Card>
+        </Card> */}
         
         {/* Overview Chart */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Platform Overview</CardTitle>
-            <CardDescription>
-              Combined view of users and reclamations over time
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="h-96">
-            {dataLoading ? (
-              <div className="flex items-center justify-center h-full">
-                <Skeleton className="w-full h-full" />
-              </div>
-            ) : (
-              <ResponsiveContainer width="100%" height="100%">
-                <ComposedChart data={combinedData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" />
-                  <YAxis yAxisId="left" />
-                  <YAxis yAxisId="right" orientation="right" />
-                  <Tooltip
-                    contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))' }}
-                    labelStyle={{ color: 'hsl(var(--card-foreground))' }}
-                  />
-                  <Legend />
-                  <Area
-                    yAxisId="left"
-                    type="monotone"
-                    dataKey="users"
-                    name="Users"
-                    fill="hsl(var(--chart-1))"
-                    stroke="hsl(var(--chart-1))"
-                    fillOpacity={0.3}
-                  />
-                  <Bar
-                    yAxisId="right"
-                    dataKey="reclamations"
-                    name="Reclamations"
-                    fill="hsl(var(--chart-2))"
-                  />
-                </ComposedChart>
-              </ResponsiveContainer>
+         {/* Overview Chart */}
+           <Card>
+             <CardHeader>
+               <CardTitle>Aperçu de la plateforme</CardTitle>
+               <CardDescription>
+                 Ce graphique superpose l’évolution cumulative des inscriptions d’utilisateurs (courbe violette) et des réclamations (courbe verte) sur la période choisie, pour comparer leur croissance dans le temp
+               </CardDescription>
+             </CardHeader>
+             <CardContent className="h-96">
+               {dataLoading ? (
+                 <div className="flex items-center justify-center h-full">
+                   <Skeleton className="w-full h-full" />
+                 </div>
+               ) : (
+              // <ResponsiveContainer width="100%" height="100%">
+              //   <ComposedChart data={combinedData}>
+              //     <CartesianGrid strokeDasharray="3 3" />
+              //     <XAxis dataKey="date" />
+              //     <YAxis yAxisId="left" />
+              //     <YAxis yAxisId="right" orientation="right" />
+              //     <Tooltip
+              //       contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))' }}
+              //       labelStyle={{ color: 'hsl(var(--card-foreground))' }}
+              //     />
+              //     <Legend />
+              //     <Area
+              //       yAxisId="left"
+              //       type="monotone"
+              //       dataKey="users"
+              //       name="Users"
+              //       fill="hsl(var(--chart-1))"
+              //       stroke="hsl(var(--chart-1))"
+              //       fillOpacity={0.3}
+              //     />
+              //     <Bar
+              //       yAxisId="right"
+              //       dataKey="reclamations"
+              //       name="Reclamations"
+              //       fill="hsl(var(--chart-2))"
+              //     />
+              //   </ComposedChart>
+              // </ResponsiveContainer>
+                <OverviewChart data={combinedData} />
             )}
           </CardContent>
         </Card>
@@ -409,9 +453,9 @@ export default function DashboardPage() {
           {/* Product Categories */}
           <Card>
             <CardHeader>
-              <CardTitle>Product Categories</CardTitle>
+              <CardTitle>Catégories de produits</CardTitle>
               <CardDescription>
-                Distribution of products by category
+                Répartition des produits par catégorie
               </CardDescription>
             </CardHeader>
             <CardContent className="h-80">
@@ -452,9 +496,9 @@ export default function DashboardPage() {
           {/* User Growth Trend */}
           <Card>
             <CardHeader>
-              <CardTitle>User Growth Trend</CardTitle>
+              <CardTitle>Tendance de croissance des utilisateurs</CardTitle>
               <CardDescription>
-                Monthly user registration trend
+                Tendance mensuelle des inscriptions d&#39;utilisateurs
               </CardDescription>
             </CardHeader>
             <CardContent className="h-80">
@@ -464,6 +508,7 @@ export default function DashboardPage() {
                 </div>
               ) : (
                 <ResponsiveContainer width="100%" height="100%">
+                  {/* <AreaChart data={usersOverTime}> */}
                   <AreaChart data={usersOverTime}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="date" />
@@ -492,9 +537,9 @@ export default function DashboardPage() {
           {/* Radar Chart */}
           <Card>
             <CardHeader>
-              <CardTitle>Platform Metrics</CardTitle>
+              <CardTitle>Indicateurs de la plateforme</CardTitle>
               <CardDescription>
-                Comparative view of key metrics
+                Vue comparative des indicateurs clés
               </CardDescription>
             </CardHeader>
             <CardContent className="h-80">
@@ -526,11 +571,11 @@ export default function DashboardPage() {
           </Card>
 
           {/* Scatter Plot */}
-          <Card>
+          {/* <Card>
             <CardHeader>
-              <CardTitle>Users vs Reclamations</CardTitle>
+              <CardTitle>Utilisateurs vs Réclamations</CardTitle>
               <CardDescription>
-                Correlation between users and reclamations
+                Corrélation entre les utilisateurs et les réclamations
               </CardDescription>
             </CardHeader>
             <CardContent className="h-80">
@@ -558,7 +603,7 @@ export default function DashboardPage() {
                 </ResponsiveContainer>
               )}
             </CardContent>
-          </Card>
+          </Card> */}
         </div>
       </div>
     </AdminLayout>

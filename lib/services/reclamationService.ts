@@ -73,7 +73,7 @@ export const markReclamationResolved = async (
   resolved: boolean
 ): Promise<void> => {
   try {
-    const reclamationDoc = doc(db, `users/${userId}/reclamations`, reclamationId);
+    const reclamationDoc = doc(db, `users/${userId}/Reclamations`, reclamationId);
     await updateDoc(reclamationDoc, {
       resolved: resolved,
       updatedAt: serverTimestamp()
@@ -89,7 +89,7 @@ export const deleteReclamation = async (
   reclamationId: string
 ): Promise<void> => {
   try {
-    const reclamationDoc = doc(db, `users/${userId}/reclamations`, reclamationId);
+    const reclamationDoc = doc(db, `users/${userId}/Reclamations`, reclamationId);
     await deleteDoc(reclamationDoc);
   } catch (error) {
     console.error("Error deleting reclamation:", error);
@@ -104,7 +104,7 @@ export const getReclamationsCount = async (): Promise<number> => {
     
     for (const userDoc of users.docs) {
       const userId = userDoc.id;
-      const reclamationsCollection = collection(db, `users/${userId}/reclamations`);
+      const reclamationsCollection = collection(db, `users/${userId}/Reclamations`);
       const reclamationsSnapshot = await getDocs(reclamationsCollection);
       totalCount += reclamationsSnapshot.size;
     }
@@ -119,28 +119,34 @@ export const getReclamationsCount = async (): Promise<number> => {
 export const getReclamationsOverTime = async (): Promise<{ date: string; value: number }[]> => {
   try {
     const users = await getDocs(collection(db, "users"));
-    const reclamationsByDate: { [key: string]: number } = {};
-    
+    const reclamationsByDate: Record<string, number> = {};
+
     for (const userDoc of users.docs) {
       const userId = userDoc.id;
-      const reclamationsCollection = collection(db, `users/${userId}/reclamations`);
-      const reclamationsSnapshot = await getDocs(query(reclamationsCollection, orderBy("date", "asc")));
-      
-      reclamationsSnapshot.docs.forEach(doc => {
+      // Use the exact collection name you created in Firestore:
+      const recsCol = collection(db, `users/${userId}/Reclamations`);
+      const recSnap = await getDocs(
+        query(recsCol, orderBy("dateReception", "asc"))
+      );
+
+      recSnap.docs.forEach(doc => {
         const data = doc.data();
-        if (data.date) {
-          const date = new Date(data.date.toDate()).toISOString().split("T")[0];
-          reclamationsByDate[date] = (reclamationsByDate[date] || 0) + 1;
+        if (data.dateReception) {
+          const dateKey = data
+            .dateReception
+            .toDate()
+            .toISOString()
+            .split("T")[0];
+          reclamationsByDate[dateKey] = (reclamationsByDate[dateKey] || 0) + 1;
         }
       });
     }
-    
-    // Convert to array and sort by date
+
     return Object.entries(reclamationsByDate)
       .map(([date, value]) => ({ date, value }))
-      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-  } catch (error) {
-    console.error("Error fetching reclamations over time:", error);
-    throw error;
+      .sort((a, b) => a.date.localeCompare(b.date));
+  } catch (err) {
+    console.error("Error fetching reclamations over time:", err);
+    throw err;
   }
 };
