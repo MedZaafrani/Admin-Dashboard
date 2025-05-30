@@ -38,17 +38,15 @@ export const getMonthsArray = (): string[] => [
   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 ];
 
-export const groupDataByMonth = (
-  data: { date: string; value: number }[]
-): { date: string; value: number }[] => {
-  const monthlyData: Record<string, number> = {};
+export function groupDataByMonth(data: { date: string; value: number }[]) {
+  const grouped: Record<string, number> = {};
 
-  data.forEach(item => {
-    const dt = toDate(item.date);
-    if (!dt) return;
-    const monthYear = format(dt, "MMM yyyy");   // e.g. "May 2025"
-    monthlyData[monthYear] = (monthlyData[monthYear] || 0) + item.value;
+  data.forEach(({ date, value }) => {
+    const d = new Date(date);
+    if (isNaN(d.getTime())) return; // skip invalid dates
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`; // YYYY-MM
+    grouped[key] = (grouped[key] || 0) + value;
   });
 
-  return Object.entries(monthlyData).map(([date, value]) => ({ date, value }));
-};
+  return Object.entries(grouped).map(([date, value]) => ({ date, value }));
+}

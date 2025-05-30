@@ -96,7 +96,7 @@ export default function UsersPage() {
           console.error("Error fetching users:", error);
           toast({
             title: "Error",
-            description: "Failed to fetch users data",
+            description: "Échec de la récupération des données des utilisateurs",
             variant: "destructive",
           });
         } finally {
@@ -155,7 +155,7 @@ export default function UsersPage() {
       
       toast({
         title: "Success",
-        description: "User updated successfully",
+        description: "L'utilisateur a été mis à jour avec succès",
       });
       
       setEditModalOpen(false);
@@ -163,7 +163,7 @@ export default function UsersPage() {
       console.error("Error updating user:", error);
       toast({
         title: "Error",
-        description: "Failed to update user",
+        description: "Échec de la mise à jour de l'utilisateur",
         variant: "destructive",
       });
     }
@@ -180,7 +180,7 @@ export default function UsersPage() {
       
       toast({
         title: "Success",
-        description: "User deleted successfully",
+        description: "Utilisateur supprimé avec succès",
       });
       
       setDeleteDialogOpen(false);
@@ -188,7 +188,7 @@ export default function UsersPage() {
       console.error("Error deleting user:", error);
       toast({
         title: "Error",
-        description: "Failed to delete user",
+        description: "Échec de la suppression de l'utilisateur",
         variant: "destructive",
       });
     }
@@ -295,7 +295,7 @@ export default function UsersPage() {
                           <TableCell>{user.email}</TableCell>
                           <TableCell>{user.telephone}</TableCell>
                           <TableCell>{user.localisation}</TableCell>
-                          <TableCell>{formatDate(user.dateJoined)}</TableCell>
+                          <TableCell>{formatDate(user.date_inscription)}</TableCell>
                           <TableCell>
                             <span
                               className={`px-2 py-1 rounded-full text-xs font-medium ${

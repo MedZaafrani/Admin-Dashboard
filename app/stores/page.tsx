@@ -69,7 +69,7 @@ export default function StoresPage() {
           console.error("Error fetching stores:", error);
           toast({
             title: "Error",
-            description: "Failed to fetch stores data",
+            description: "Échec de la récupération des données des magasins",
             variant: "destructive",
           });
         } finally {
@@ -127,7 +127,7 @@ export default function StoresPage() {
           <h1 className="text-3xl font-bold">Gestion des magasins</h1>
           
           <div className="flex items-center gap-2">
-            <div className="relative">
+            {/* <div className="relative">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 type="search"
@@ -136,19 +136,19 @@ export default function StoresPage() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-            </div>
-            <Button onClick={() => setCreateModalOpen(true)}>
+            </div> */}
+            {/* <Button onClick={() => setCreateModalOpen(true)}>
               <Plus className="h-4 w-4 mr-2" />
               Ajouter un magasin
-            </Button>
+            </Button> */}
           </div>
         </div>
         
         <Tabs defaultValue="map" className="space-y-4">
           <TabsList>
-            <TabsTrigger value="map">Map View</TabsTrigger>
-            <TabsTrigger value="table">Table View</TabsTrigger>
-            <TabsTrigger value="card">Card View</TabsTrigger>
+            {/* <TabsTrigger value="map">Vue cartographique</TabsTrigger> */}
+            {/* <TabsTrigger value="table">Table View</TabsTrigger>
+            <TabsTrigger value="card">Card View</TabsTrigger> */}
           </TabsList>
 
           <TabsContent value="map">

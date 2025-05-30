@@ -109,7 +109,7 @@ export default function ReclamationsPage() {
           console.error("Error fetching reclamations:", error);
           toast({
             title: "Error",
-            description: "Failed to fetch reclamations data",
+            description: "Échec de la récupération des données de réclamation",
             variant: "destructive",
           });
         } finally {
@@ -193,13 +193,13 @@ export default function ReclamationsPage() {
       
       toast({
         title: "Success",
-        description: `Reclamation marked as ${!reclamation.resolved ? "resolved" : "unresolved"}`,
+        description: `Récupération marquée comme ${!reclamation.resolved ? "resolved" : "unresolved"}`,
       });
     } catch (error) {
       console.error("Error updating reclamation status:", error);
       toast({
         title: "Error",
-        description: "Failed to update reclamation status",
+        description: "Échec de la mise à jour du statut de réclamation",
         variant: "destructive",
       });
     }
@@ -221,7 +221,7 @@ export default function ReclamationsPage() {
       
       toast({
         title: "Success",
-        description: "Reclamation deleted successfully",
+        description: "Récupération supprimée avec succès",
       });
       
       setDeleteDialogOpen(false);
@@ -229,7 +229,7 @@ export default function ReclamationsPage() {
       console.error("Error deleting reclamation:", error);
       toast({
         title: "Error",
-        description: "Failed to delete reclamation",
+        description: "Échec de la suppression de la réclamation",
         variant: "destructive",
       });
     }

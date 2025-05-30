@@ -135,7 +135,7 @@ export default function AdminLayout({
               onClick={() => signOut()}
             >
               <LogOut size={18} className="mr-2" />
-              Sign Out
+              Se déconnecter
             </Button>
           </div>
         </div>

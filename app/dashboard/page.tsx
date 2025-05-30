@@ -260,7 +260,7 @@ console.log("▶ reclamationsOverTime:", groupDataByMonth(reclamationTimeData));
       fetchDashboardData();
     }
   }, [user]);
-  
+  const hardcodedStoreCount = 3;
   // Combined data for the overview chart
   // const combinedData = usersOverTime.map((item, index) => ({
   //   date: item.date,
@@ -269,13 +269,19 @@ console.log("▶ reclamationsOverTime:", groupDataByMonth(reclamationTimeData));
   // }));
   // instead of zipping by index:
 const dataMap: Record<string, { users: number; reclamations: number }> = {};
-
+const normalizeDate = (rawDate: string): string => {
+  const dateObj = new Date(rawDate);
+  return dateObj.toISOString().split("T")[0]; // => 'YYYY-MM-DD'
+};
 usersOverTime.forEach(({ date, value }) => {
-  dataMap[date] = { users: value, reclamations: 0 };
+  const cleanDate = normalizeDate(date);
+  dataMap[cleanDate] = { users: value, reclamations: 0 };
 });
+
 reclamationsOverTime.forEach(({ date, value }) => {
-  dataMap[date] = dataMap[date] 
-    ? { ...dataMap[date], reclamations: value } 
+  const cleanDate = normalizeDate(date);
+  dataMap[cleanDate] = dataMap[cleanDate]
+    ? { ...dataMap[cleanDate], reclamations: value }
     : { users: 0, reclamations: value };
 });
 const combinedData = Object.entries(dataMap)
@@ -376,7 +382,7 @@ const combinedData = Object.entries(dataMap)
                 <Skeleton className="h-8 w-20" />
               ) : (
                 <>
-                  <div className="text-2xl font-bold">{stores.length}</div>
+                  <div className="text-2xl font-bold">{hardcodedStoreCount}</div>
                   <p className="text-xs text-muted-foreground">+2 nouveaux ce mois-ci</p>
                 </>
               )}
@@ -511,7 +517,15 @@ const combinedData = Object.entries(dataMap)
                   {/* <AreaChart data={usersOverTime}> */}
                   <AreaChart data={usersOverTime}>
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" />
+                    <XAxis dataKey="date"
+                    tickFormatter={(value) =>
+    new Date(value).toLocaleDateString("fr-FR", {
+      month: "short",
+      year: "numeric",
+    })
+  }
+
+                    />
                     <YAxis />
                     <Tooltip
                       contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))' }}
@@ -535,7 +549,7 @@ const combinedData = Object.entries(dataMap)
         {/* Additional Charts */}
         <div className="grid gap-4 md:grid-cols-2">
           {/* Radar Chart */}
-          <Card>
+          {/* <Card>
             <CardHeader>
               <CardTitle>Indicateurs de la plateforme</CardTitle>
               <CardDescription>
@@ -568,7 +582,7 @@ const combinedData = Object.entries(dataMap)
                 </ResponsiveContainer>
               )}
             </CardContent>
-          </Card>
+          </Card> */}
 
           {/* Scatter Plot */}
           {/* <Card>

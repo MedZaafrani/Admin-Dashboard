@@ -103,7 +103,7 @@ export default function ProductsPage() {
           console.error("Error fetching products data:", error);
           toast({
             title: "Error",
-            description: "Failed to fetch products data",
+            description: "Échec de la récupération des données des produits",
             variant: "destructive",
           });
         } finally {
@@ -193,13 +193,13 @@ export default function ProductsPage() {
     <AdminLayout>
       <div className="flex flex-col gap-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <h1 className="text-3xl font-bold">Products Management</h1>
+          <h1 className="text-3xl font-bold">Gestion des produits</h1>
           
           <div className="relative">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="Search products..."
+              placeholder="Rechercher des produits..."
               className="pl-8 w-full sm:w-64"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -211,7 +211,7 @@ export default function ProductsPage() {
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex items-center space-x-2">
             <Filter className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm text-muted-foreground">Filter by:</span>
+            <span className="text-sm text-muted-foreground">Filtrer par: </span>
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -220,10 +220,10 @@ export default function ProductsPage() {
               onValueChange={setCategoryFilter}
             >
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Filter by category" />
+                <SelectValue placeholder="Filtrer par categorie" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
+                <SelectItem value="all">Toutes les catégories </SelectItem>
                 {categories.map((category) => (
                   <SelectItem key={category} value={category || "uncategorized"}>
                     {category || "Uncategorized"}
@@ -237,13 +237,13 @@ export default function ProductsPage() {
               onValueChange={setStoreFilter}
             >
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Filter by store" />
+                <SelectValue placeholder="Filtrer par magasin" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Stores</SelectItem>
+                <SelectItem value="all">Tous les magasins</SelectItem>
                 {stores.map((store) => (
-                  <SelectItem key={store} value={store || "unknown"}>
-                    {store || "Unknown Store"}
+                  <SelectItem key={store} value={store || "Inconnu"}>
+                    {store || "Magasin Inconnu"}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -254,13 +254,13 @@ export default function ProductsPage() {
               onValueChange={setBrandFilter}
             >
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Filter by brand" />
+                <SelectValue placeholder="Filtrer par marque" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Brands</SelectItem>
+                <SelectItem value="all">Toutes les marques</SelectItem>
                 {brands.map((brand) => (
-                  <SelectItem key={brand} value={brand || "unbranded"}>
-                    {brand || "Unbranded"}
+                  <SelectItem key={brand} value={brand || "sans marque"}>
+                    {brand || "sans marque"}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -270,7 +270,7 @@ export default function ProductsPage() {
         
         <Card>
           <CardHeader>
-            <CardTitle>All Products</CardTitle>
+            <CardTitle>Tous les produits</CardTitle>
           </CardHeader>
           <CardContent>
             {dataLoading ? (
@@ -283,16 +283,16 @@ export default function ProductsPage() {
             ) : (
               <div className="rounded-md border overflow-x-auto">
                 <Table>
-                  <TableCaption>A list of all products in the system</TableCaption>
+                  <TableCaption>Liste de tous les produits du système</TableCaption>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Category</TableHead>
-                      <TableHead>Brand</TableHead>
-                      <TableHead>Avg. Price</TableHead>
-                      <TableHead>Created At</TableHead>
+                      <TableHead>Nom</TableHead>
+                      <TableHead>Catégorie</TableHead>
+                      <TableHead>Marque</TableHead>
+                      <TableHead>Prix moyen</TableHead>
+                      <TableHead>Créé le</TableHead>
                       {stores.length > 0 && stores.map((store) => (
-                        <TableHead key={store}>{store} Price</TableHead>
+                        <TableHead key={store}>Prix {store} </TableHead>
                       ))}
                       <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
@@ -301,7 +301,7 @@ export default function ProductsPage() {
                     {filteredProducts.length === 0 ? (
                       <TableRow>
                         <TableCell colSpan={6 + stores.length} className="text-center">
-                          No products found
+                          Aucun produit trouvé
                         </TableCell>
                       </TableRow>
                     ) : (
@@ -326,7 +326,7 @@ export default function ProductsPage() {
                               onClick={() => handleViewPriceHistory(product)}
                             >
                               <History className="h-4 w-4" />
-                              <span className="sr-only">View price history</span>
+                              <span className="sr-only">Afficher l\historique des prix</span>
                             </Button>
                           </TableCell>
                         </TableRow>
@@ -344,7 +344,7 @@ export default function ProductsPage() {
       <Dialog open={priceHistoryModalOpen} onOpenChange={setPriceHistoryModalOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Price History</DialogTitle>
+            <DialogTitle>Historique des prix</DialogTitle>
             <DialogDescription>
               {selectedProduct?.nom} - {selectedProduct?.marque}
             </DialogDescription>
@@ -352,7 +352,7 @@ export default function ProductsPage() {
           
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">Current Average Price:</span>
+              <span className="text-sm font-medium">Prix moyen actuel :</span>
               <span className="font-semibold">
                 {selectedProduct ? formatPrice(selectedProduct.prix) : "N/A"}
               </span>
@@ -366,13 +366,13 @@ export default function ProductsPage() {
                   <div key={store} className="border rounded-lg p-4">
                     <h3 className="text-lg font-semibold mb-2">{store}</h3>
                     <div className="flex items-center justify-between mb-4">
-                      <span className="text-sm text-muted-foreground">Current Price:</span>
+                      <span className="text-sm text-muted-foreground">Prix actuel :</span>
                       <span className="font-medium">
                         {formatPrice(parseFloat(selectedProduct.produits[store].prix.toString()))}
                       </span>
                     </div>
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-muted-foreground">Last Updated:</span>
+                      <span className="text-sm text-muted-foreground">Dernière mise à jour :</span>
                       <span className="text-sm">
                         {formatDate(selectedProduct.produits[store].date_maj)}
                       </span>
@@ -385,7 +385,7 @@ export default function ProductsPage() {
             <div className="rounded-lg border p-4">
               <div className="flex items-center gap-2 mb-2">
                 <BarChart className="h-4 w-4 text-muted-foreground" />
-                <h3 className="text-sm font-medium">Price Comparison</h3>
+                <h3 className="text-sm font-medium">Comparaison des prix</h3>
               </div>
               
               <div className="h-48">
@@ -426,7 +426,7 @@ export default function ProductsPage() {
                 </ResponsiveContainer>
               </div>
               <div className="text-xs text-muted-foreground mt-2 text-center">
-                Note: Complete historical data not available in this demo version
+                  Remarque : Données historiques complètes non disponibles dans cette version de démonstration
               </div>
             </div>
           </div>
