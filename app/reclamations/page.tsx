@@ -253,14 +253,14 @@ export default function ReclamationsPage() {
     <AdminLayout>
       <div className="flex flex-col gap-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <h1 className="text-3xl font-bold">Reclamations</h1>
+          <h1 className="text-3xl font-bold">Réclamations</h1>
           
           <div className="flex items-center gap-2">
             <div className="relative">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 type="search"
-                placeholder="Search reclamations..."
+                placeholder="Rechercher des réclamations..."
                 className="pl-8 w-full sm:w-64"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -272,7 +272,7 @@ export default function ReclamationsPage() {
               onClick={() => setStatsModalOpen(true)}
             >
               <BarChart className="h-4 w-4" />
-              <span className="sr-only">View statistics</span>
+              <span className="sr-only">Afficher les statistiques</span>
             </Button>
           </div>
         </div>
@@ -281,7 +281,7 @@ export default function ReclamationsPage() {
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex items-center space-x-2">
             <Filter className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm text-muted-foreground">Filter by:</span>
+            <span className="text-sm text-muted-foreground">Filtrer par:</span>
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -290,13 +290,13 @@ export default function ReclamationsPage() {
               onValueChange={setSenderFilter}
             >
               <SelectTrigger className="w-full sm:w-[180px]">
-                <SelectValue placeholder="Filter by sender" />
+                <SelectValue placeholder="Filtrer par expéditeur" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Senders</SelectItem>
+                <SelectItem value="all">Tous les expéditeurs</SelectItem>
                 {senders.map((sender) => (
-                  <SelectItem key={sender} value={sender || "unknown"}>
-                    {sender || "Unknown Sender"}
+                  <SelectItem key={sender} value={sender || "Inconnu"}>
+                    {sender || "Inconnu Sender"}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -307,12 +307,12 @@ export default function ReclamationsPage() {
               onValueChange={setStatusFilter}
             >
               <SelectTrigger className="w-full sm:w-[180px]">
-                <SelectValue placeholder="Filter by status" />
+                <SelectValue placeholder="Filtrer par statut" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="resolved">Resolved</SelectItem>
-                <SelectItem value="unresolved">Unresolved</SelectItem>
+                <SelectItem value="all">Tous les statuts</SelectItem>
+                <SelectItem value="resolved">Résolu</SelectItem>
+                <SelectItem value="unresolved">Non résolu</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -320,7 +320,7 @@ export default function ReclamationsPage() {
         
         <Card>
           <CardHeader>
-            <CardTitle>All Reclamations</CardTitle>
+            <CardTitle>Toutes les réclamations</CardTitle>
           </CardHeader>
           <CardContent>
             {dataLoading ? (
@@ -333,14 +333,14 @@ export default function ReclamationsPage() {
             ) : (
               <div className="rounded-md border">
                 <Table>
-                  <TableCaption>A list of all reclamations in the system</TableCaption>
+                  <TableCaption>Une liste de toutes les réclamations dans le système</TableCaption>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Sender</TableHead>
-                      <TableHead>Recipient</TableHead>
+                      <TableHead>Expéditeur</TableHead>
+                      <TableHead>Destinataire</TableHead>
                       <TableHead>Message</TableHead>
                       <TableHead>Date</TableHead>
-                      <TableHead>Status</TableHead>
+                      <TableHead>Statut</TableHead>
                       <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -393,7 +393,7 @@ export default function ReclamationsPage() {
                               onClick={() => handleDeleteReclamation(reclamation)}
                             >
                               <Trash2 className="h-4 w-4 text-destructive" />
-                              <span className="sr-only">Delete reclamation</span>
+                              <span className="sr-only">Supprimer la récupération</span>
                             </Button>
                           </TableCell>
                         </TableRow>
@@ -413,16 +413,16 @@ export default function ReclamationsPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete this reclamation.
+              Cette action est irréversible. Elle supprimera définitivement cette réclamation.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
             <AlertDialogAction
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               onClick={confirmDeleteReclamation}
             >
-              Delete
+              Supprimer
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -432,25 +432,25 @@ export default function ReclamationsPage() {
       <Dialog open={statsModalOpen} onOpenChange={setStatsModalOpen}>
         <DialogContent className="sm:max-w-[800px]">
           <DialogHeader>
-            <DialogTitle>Reclamations Statistics</DialogTitle>
+            <DialogTitle>Statistiques sur les réclamations</DialogTitle>
             <DialogDescription>
-              Detailed analysis of reclamations data
+              Analyse détaillée des données de réclamations
             </DialogDescription>
           </DialogHeader>
 
           <Tabs defaultValue="status" className="w-full">
             <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="status">Status Distribution</TabsTrigger>
-              <TabsTrigger value="top-senders">Top Senders</TabsTrigger>
-              <TabsTrigger value="timeline">Timeline</TabsTrigger>
+              <TabsTrigger value="status">Répartition des statuts</TabsTrigger>
+              <TabsTrigger value="top-senders">Expéditeurs les plus actifs</TabsTrigger>
+              <TabsTrigger value="timeline">Chronologie</TabsTrigger>
             </TabsList>
 
             <TabsContent value="status">
               <Card>
                 <CardHeader>
-                  <CardTitle>Status Distribution</CardTitle>
+                  <CardTitle>Répartition des statuts</CardTitle>
                   <CardDescription>
-                    Distribution of resolved vs pending reclamations
+                    Répartition des réclamations résolues et en attente
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="h-[400px]">
@@ -481,9 +481,9 @@ export default function ReclamationsPage() {
             <TabsContent value="top-senders">
               <Card>
                 <CardHeader>
-                  <CardTitle>Top Senders</CardTitle>
+                  <CardTitle>Expéditeurs les plus actifs</CardTitle>
                   <CardDescription>
-                    Users with the most reclamations
+                    Utilisateurs les plus réclamés
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="h-[400px]">
@@ -503,9 +503,9 @@ export default function ReclamationsPage() {
             <TabsContent value="timeline">
               <Card>
                 <CardHeader>
-                  <CardTitle>Reclamations Timeline</CardTitle>
+                  <CardTitle>Évolution des réclamations</CardTitle>
                   <CardDescription>
-                    Number of reclamations over time
+                    Nombre de réclamations au fil du temps
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="h-[400px]">

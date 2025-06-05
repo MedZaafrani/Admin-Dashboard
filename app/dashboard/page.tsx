@@ -520,6 +520,7 @@ const combinedData = Object.entries(dataMap)
                     <XAxis dataKey="date"
                     tickFormatter={(value) =>
     new Date(value).toLocaleDateString("fr-FR", {
+      day: "numeric",
       month: "short",
       year: "numeric",
     })
