@@ -16,10 +16,11 @@ This is the Admin Dashboard for the **Smart Shopping Lists** platform. It allows
 
 ## 🧰 Tech Stack
 
-- **Frontend:** React.js + Tailwind CSS  
-- **Backend:** Node.js + Express  
+- **Frontend & Backend:** [Next.js](https://nextjs.org/) (Fullstack React Framework)  
 - **Database:**  Firebase Firestore  
-- **Auth & Storage:** Firebase Authentication, Firestore  
+- **Auth & Storage:** Firebase Authentication, Firestore
+- **Styling:** Tailwind CSS
+
 
 ---
 
